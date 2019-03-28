@@ -1,0 +1,31 @@
+{
+  "name": "merge-sort",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "clean": "rimraf dist",
+    "start": "bash ./start.sh",
+    "start:webpack": "webpack --watch",
+    "start:server": "ts-node $NODE_DEBUG_OPTION ./dist/build.js",
+    "debug": "ts-node $NODE_DEBUG_OPTION ./app/index.ts",
+    "build": "npm run clean && webpack"
+  },
+  "author": "Tomasz Pogorzelski",
+  "devDependencies": {
+    "@types/node": "^10.12.2",
+    "file-loader": "1.1.11",
+    "nodemon": "^1.18.5",
+    "ts-loader": "^5.3.0",
+    "ts-node": "^7.0.1",
+    "tslint": "^5.11.0",
+    "tslint-loader": "^3.5.4",
+    "typescript": "^3.1.6",
+    "webpack": "4.16.5",
+    "webpack-cli": "3.1.0",
+    "webpack-dev-server": "3.1.5"
+  },
+  "dependencies": {
+    "jointjs": "^2.2.1"
+  }
+}
