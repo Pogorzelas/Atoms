@@ -129,11 +129,11 @@ function orbitalNumber(number, z) {
 function electronMove(electron, atom, orbital, r) {
   electron.electron.transition('target', 1, {
     duration: 3000,
-    timingFunction: time => time + (1/electron.orbital.max * electron.orbital.electron) + (1/electron.electronShell * electron.orbital.n),
+    timingFunction: time => time + ((1/electron.orbital.max * electron.orbital.electron) + (1/electron.electronShell * electron.orbital.n)),
     valueFunction: () => (t) => {
         return {
-          x: (atom.position().x + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.cos((t * 2 * Math.PI))),
-          y: (atom.position().y + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.sin((t * 2 * Math.PI)))
+          x: (atom.position().x + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.cos((t * 2 * Math.PI) * Math.pow(-1, electron.orbital.n))),
+          y: (atom.position().y + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.sin((t * 2 * Math.PI) * Math.pow(-1, electron.orbital.n)))
         }
       }
   });
