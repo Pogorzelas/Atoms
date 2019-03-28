@@ -88,14 +88,52 @@ function centerX(r) {
 function centerY(r) {
   return 500 - r/2
 }
-function electronMove(electron, atom, orbital, r, z) {
+function electronShell(z) {
+  if (z <= 2) {
+    return 1;
+  } else if (z <= 10) {
+    return 2;
+  } else if (z <= 18) {
+    return 3;
+  } else {
+    return 4;
+  }
+}
+function orbitalNumber(number, z) {
+  if (number <= 2) {
+    return {
+      n: 1,
+      max: z > 2 ? 2 : z,
+      electron: number,
+    };
+  } else if (number > 2 && number <= 10) {
+    return {
+      n: 2,
+      max: z > 10 ? 8 : z - 2,
+      electron: number - 2,
+    };
+  } else if (number > 10 && number <= 18) {
+    return {
+      n: 3,
+      max: z > 18 ? 8 : z - 10,
+      electron: number - 10,
+    };
+  } else if (number > 18) {
+    return {
+      n: 4,
+      max: 2,
+      electron: number - 18,
+    };
+  }
+}
+function electronMove(electron, atom, orbital, r) {
   electron.electron.transition('target', 1, {
     duration: 3000,
-    timingFunction: time => time + 1/z * electron.number,
+    timingFunction: time => time + (1/electron.orbital.max * electron.orbital.electron) + (1/electron.electronShell * electron.orbital.n),
     valueFunction: () => (t) => {
         return {
-          x: (atom.position().x + r/2) + (orbital * Math.cos((t * 2 * Math.PI))),
-          y: (atom.position().y + r/2) + (orbital * Math.sin((t * 2 * Math.PI)))
+          x: (atom.position().x + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.cos((t * 2 * Math.PI))),
+          y: (atom.position().y + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.sin((t * 2 * Math.PI)))
         }
       }
   });
@@ -123,7 +161,7 @@ const Atom = class {
     });
     this.atomModel.addTo(graph);
     let electrons = [];
-    for (let i = 0; i < this.z; i++) {
+    for (let i = this.z; i > 0; i--) {
       electrons.push({
         electron: new joint.shapes.standard.Link()
           .source(this.atomModel)
@@ -152,14 +190,15 @@ const Atom = class {
             }]
           })
           .addTo(graph),
-          number: i + 1,
+          orbital: orbitalNumber(i, this.z),
+          electronShell: electronShell(this.z)
         }
       )
     }
     electrons.forEach(electron => {
-      electronMove(electron, this.atomModel, this.orbital, this.r, this.z);
+      electronMove(electron, this.atomModel, this.orbital, this.r);
       electron.electron.on('transition:end', () => {
-        electronMove(electron, this.atomModel, this.orbital, this.r, this.z);
+        electronMove(electron, this.atomModel, this.orbital, this.r);
       });
     });
   }
