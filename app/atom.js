@@ -76,6 +76,60 @@ const SODIUM = {
   r: 180/3 * SIZE_MODIFIER,
   orbital: 180 * SIZE_MODIFIER,
 };
+const MAGNESIUM = {
+  sign: 'Mg',
+  z: 12,
+  r: 150/3 * SIZE_MODIFIER,
+  orbital: 150 * SIZE_MODIFIER,
+};
+const ALUMINIUM = {
+  sign: 'Al',
+  z: 13,
+  r: 125/3 * SIZE_MODIFIER,
+  orbital: 125 * SIZE_MODIFIER,
+};
+const SILICON = {
+  sign: 'Si',
+  z: 14,
+  r: 110/3 * SIZE_MODIFIER,
+  orbital: 110 * SIZE_MODIFIER,
+};
+const PHOSPHORUS = {
+  sign: 'P',
+  z: 15,
+  r: 100/3 * SIZE_MODIFIER,
+  orbital: 100 * SIZE_MODIFIER,
+};
+const SULFUR = {
+  sign: 'S',
+  z: 16,
+  r: 100/3 * SIZE_MODIFIER,
+  orbital: 110 * SIZE_MODIFIER,
+};
+const CHLORINE = {
+  sign: 'Cl',
+  z: 17,
+  r: 100/3 * SIZE_MODIFIER,
+  orbital: 110 * SIZE_MODIFIER,
+};
+const ARGON = {
+  sign: 'Ar',
+  z: 18,
+  r: 71/3 * SIZE_MODIFIER,
+  orbital: 71 * SIZE_MODIFIER,
+};
+const POTASSIUM = {
+  sign: 'K',
+  z: 19,
+  r: 220/3 * SIZE_MODIFIER,
+  orbital: 220 * SIZE_MODIFIER,
+};
+const CALCIUM = {
+  sign: 'Ca',
+  z: 20,
+  r: 180/3 * SIZE_MODIFIER,
+  orbital: 180 * SIZE_MODIFIER,
+};
 function randPos() {
   return Math.random() * 600 + 200;
 }
@@ -129,11 +183,15 @@ function orbitalNumber(number, z) {
 function electronMove(electron, atom, orbital, r) {
   electron.electron.transition('target', 1, {
     duration: 3000,
-    timingFunction: time => time + ((1/electron.orbital.max * electron.orbital.electron) + (1/electron.electronShell * electron.orbital.n)),
+    timingFunction: time => {
+     return time + ((1/electron.orbital.max * electron.orbital.electron) + (1/electron.electronShell * electron.orbital.n))
+    },
     valueFunction: () => (t) => {
+      const orbitalDistance = orbital/(electron.electronShell + 1 - electron.orbital.n);
+      const rotation = (t * 2 * Math.PI) * Math.pow(-1, electron.orbital.n);
         return {
-          x: (atom.position().x + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.cos((t * 2 * Math.PI) * Math.pow(-1, electron.orbital.n))),
-          y: (atom.position().y + r/2) + (orbital/(electron.electronShell + 1 - electron.orbital.n) * Math.sin((t * 2 * Math.PI) * Math.pow(-1, electron.orbital.n)))
+          x: (atom.position().x + r/2) + (orbitalDistance * Math.cos(rotation)),
+          y: (atom.position().y + r/2) + (orbitalDistance * Math.sin(rotation))
         }
       }
   });
